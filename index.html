@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}CRATE — Everyday tech, sorted{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <span class="eyebrow">Catalog</span>
+  <h1>Everyday tech,<br>sorted.</h1>
+  <p class="lead">Six essentials picked for people who don't want to shop for gadgets twice.</p>
+  <div class="hero-meta">
+    <span>{{ products|length }} items in stock</span>
+    <span class="dot">&bull;</span>
+    <span>Free shipping over &#8377;2,000</span>
+  </div>
+</section>
+
+<div class="section-title">
+  <h2>All products</h2>
+  <span>{{ products|length }} listed</span>
+</div>
+
+<div class="grid">
+  {% for product in products %}
+  <div class="card">
+    <a class="card-media" href="{{ url_for('product_detail', product_id=product.id) }}">
+      <img src="{{ product.image_url }}" alt="{{ product.name }}">
+      <span class="tag">&#8377;{{ '%.0f' % product.price }}</span>
+    </a>
+    <div class="card-body">
+      <h3>{{ product.name }}</h3>
+      <p class="desc">{{ product.description }}</p>
+      <span class="sku">{{ product.sku }}</span>
+
+      <div class="stock {% if product.stock == 0 %}out{% elif product.stock <= 5 %}low{% endif %}">
+        <span class="bars">
+          {% for i in range(1,5) %}
+            <span class="{% if i <= product.stock_bars %}filled{% endif %}"></span>
+          {% endfor %}
+        </span>
+        {% if product.stock == 0 %}Out of stock{% else %}{{ product.stock }} in stock{% endif %}
+      </div>
+
+      <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="cart-form">
+        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+        <button type="submit" class="btn btn-primary btn-block" {% if product.stock == 0 %}disabled{% endif %}>
+          {% if product.stock == 0 %}Sold out{% else %}Add to cart{% endif %}
+        </button>
+      </form>
+      <a href="{{ url_for('product_detail', product_id=product.id) }}" class="link-quiet">View details &rarr;</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

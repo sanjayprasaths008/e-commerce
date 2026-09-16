@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}My Orders — CRATE{% endblock %}
+{% block content %}
+
+<div class="section-title">
+  <h2>My orders</h2>
+  <span>{{ orders|length }} total</span>
+</div>
+
+{% if orders %}
+  {% for order in orders %}
+  <div class="order-card">
+    <div class="order-card-head">
+      <span>Order #{{ '%05d' % order.id }} &middot; {{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+      <span class="order-status-badge">{{ order.status }}</span>
+    </div>
+    <ul>
+      {% for item in order.items %}
+      <li>{{ item.product_name }} &times; {{ item.quantity }} — &#8377;{{ '%.2f' % item.price }}</li>
+      {% endfor %}
+    </ul>
+    <span class="order-total">&#8377;{{ '%.2f' % order.total }}</span>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="empty-state">
+  <h3>No orders yet</h3>
+  <p>Once you place an order, it'll show up here.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary" style="margin-top: 12px;">Browse catalog</a>
+</div>
+{% endif %}
+
+{% endblock %}

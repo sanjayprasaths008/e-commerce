@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart — CRATE{% endblock %}
+{% block content %}
+
+<div class="section-title">
+  <h2>Your cart</h2>
+  <span>{{ items|length }} item{{ 's' if items|length != 1 else '' }}</span>
+</div>
+
+{% if items %}
+<table class="cart-table">
+  <thead>
+    <tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for entry in items %}
+    <tr>
+      <td>
+        <div class="prod">
+          <img src="{{ entry.product.image_url }}" alt="{{ entry.product.name }}">
+          <div>
+            <div>{{ entry.product.name }}</div>
+            <div class="sku">{{ entry.product.sku }}</div>
+          </div>
+        </div>
+      </td>
+      <td class="mono">&#8377;{{ '%.2f' % entry.product.price }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('update_cart', product_id=entry.product.id) }}" style="display:flex; gap:6px;">
+          <input type="number" name="quantity" value="{{ entry.qty }}" min="0" class="qty-input">
+          <button type="submit" class="btn btn-outline btn-sm">Update</button>
+        </form>
+      </td>
+      <td class="mono">&#8377;{{ '%.2f' % entry.subtotal }}</td>
+      <td><a href="{{ url_for('remove_from_cart', product_id=entry.product.id) }}" class="btn btn-danger btn-sm">Remove</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="cart-summary">
+  <span class="mono" style="color: var(--text-muted);">Total</span>
+  <span class="total">&#8377;{{ '%.2f' % total }}</span>
+  <a href="{{ url_for('checkout') }}" class="btn btn-primary">Proceed to checkout</a>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <h3>Your cart is empty</h3>
+  <p>Nothing here yet — go find something worth carrying.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary" style="margin-top: 12px;">Browse catalog</a>
+</div>
+{% endif %}
+
+{% endblock %}

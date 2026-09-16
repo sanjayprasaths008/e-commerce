@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed — CRATE{% endblock %}
+{% block content %}
+
+<div style="text-align:center; padding-top: 40px;">
+  <span class="order-status-badge">&#10003; Order confirmed</span>
+</div>
+
+<div class="receipt-wrap">
+  <div class="receipt-edge top"></div>
+  <div class="receipt">
+    <h3>CRATE</h3>
+    <p class="sub">Order #{{ '%05d' % order.id }} &middot; {{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+
+    {% for item in order.items %}
+    <div class="receipt-line">
+      <span>{{ item.product_name }} &times;{{ item.quantity }}</span>
+      <span>&#8377;{{ '%.2f' % (item.price * item.quantity) }}</span>
+    </div>
+    {% endfor %}
+
+    <hr class="receipt-divider">
+
+    <div class="receipt-total">
+      <span>Total paid</span>
+      <span>&#8377;{{ '%.2f' % order.total }}</span>
+    </div>
+
+    <div class="barcode">&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;&#8214;</div>
+    <p class="thanks">Thank you — see you again</p>
+  </div>
+  <div class="receipt-edge"></div>
+</div>
+
+<div style="text-align:center; margin-top: 20px;">
+  <a href="{{ url_for('index') }}" class="btn btn-primary">Continue shopping</a>
+</div>
+
+{% endblock %}

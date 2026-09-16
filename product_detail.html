@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — CRATE{% endblock %}
+{% block content %}
+
+<div style="padding-top: 24px;">
+  <a href="{{ url_for('index') }}" class="link-quiet">&larr; Back to catalog</a>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-media">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+  </div>
+
+  <div>
+    <span class="eyebrow">{{ product.sku }}</span>
+    <h1 style="font-size: 1.8rem; margin-top: 8px;">{{ product.name }}</h1>
+    <p style="color: var(--text-muted);">{{ product.description }}</p>
+
+    <div class="price-big">&#8377;{{ '%.2f' % product.price }}</div>
+
+    <div class="stock {% if product.stock == 0 %}out{% elif product.stock <= 5 %}low{% endif %}">
+      <span class="bars">
+        {% for i in range(1,5) %}
+          <span class="{% if i <= product.stock_bars %}filled{% endif %}"></span>
+        {% endfor %}
+      </span>
+      {% if product.stock == 0 %}Out of stock{% else %}{{ product.stock }} units in stock{% endif %}
+    </div>
+
+    <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}" class="cart-form" style="margin-top: 20px; max-width: 320px;">
+      <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="qty-input">
+      <button type="submit" class="btn btn-primary btn-block" {% if product.stock == 0 %}disabled{% endif %}>
+        {% if product.stock == 0 %}Sold out{% else %}Add to cart{% endif %}
+      </button>
+    </form>
+
+    <div class="spec-list">
+      <div class="spec-row"><span>SKU</span><span>{{ product.sku }}</span></div>
+      <div class="spec-row"><span>Price</span><span>&#8377;{{ '%.2f' % product.price }}</span></div>
+      <div class="spec-row"><span>Stock</span><span>{{ product.stock }} units</span></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

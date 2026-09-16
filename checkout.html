@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Checkout — CRATE{% endblock %}
+{% block content %}
+
+<div class="section-title">
+  <h2>Checkout</h2>
+</div>
+
+<div class="receipt-wrap">
+  <div class="receipt-edge top"></div>
+  <div class="receipt">
+    <h3>Order Summary</h3>
+    <p class="sub">CRATE — order preview</p>
+
+    {% for entry in items %}
+    <div class="receipt-line">
+      <span>{{ entry.product.name }} &times;{{ entry.qty }}</span>
+      <span>&#8377;{{ '%.2f' % entry.subtotal }}</span>
+    </div>
+    {% endfor %}
+
+    <hr class="receipt-divider">
+
+    <div class="receipt-total">
+      <span>Total</span>
+      <span>&#8377;{{ '%.2f' % total }}</span>
+    </div>
+  </div>
+  <div class="receipt-edge"></div>
+</div>
+
+<form method="POST" class="form-card" style="margin-top: 0;">
+  <h2 style="font-size: 1.1rem;">Shipping address</h2>
+  <p class="sub">Demo only — nothing here is saved.</p>
+  <div class="field">
+    <label>Address</label>
+    <textarea rows="3" placeholder="123 Main Street, Chennai"></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary btn-block">Place order</button>
+</form>
+
+{% endblock %}
